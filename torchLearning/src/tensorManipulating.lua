@@ -81,10 +81,58 @@ print(x:size())  -- 返回的是Tensor的结构信息
 print(x:size(1))  -- 获取第1维度的size
 print(x:size(2))  -- 获取第2维度的size
 
+--[[
+Tensor中stride信息，也就是元素跳跃的个数
+--]]
+x = torch.Tensor(4, 5):fill(1)
+print(x:stride())  -- 输出应该是5，1
+print(x:stride(1))  -- 对应第2维的size
 
+--[[
+storage相当于将向量映射到1维
+--]]
+x = torch.Tensor(4, 5)
+s = x:storage()  -- s的句柄指向x
+i = 0 
+x:apply(
+function(x)
+        i = i + 1
+        return i 
+end
+)
+print(s)
 
+--[[
+isContiguous()上面已经用过一个类似的contiguous函数
+很明显是为了判定Tensor的数据是否是连续的
+--]]
+x = torch.randn(4, 5)
+print(x:isContiguous())
+y = x:select(2, 3)  -- 相当于取第2维的第3列  切片操作
+print(x)
+print(y)
+print(y:isContiguous()) -- 这个地方当然不是了
+print(y:stride())  -- 输出一下stride，会发现还是原来的
 
+--[[
+isSize(LongStorage) 判定size是否是一致的
+--]]
+x = torch.Tensor(4, 5)
+y = torch.LongStorage({4, 5})
+z = torch.LongStorage({4, 5, 1})
+print(x:isSize(y)) -- size一样的
+print(x:isSize(z))  -- size是不一样的
 
+--[[
+boolean isSameSizeAs(Tensor)  比较两个Tensor的size是否一致
+--]]
+x = torch.Tensor(4, 5)
+y = torch.Tensor(4, 5)
+print(x:isSameSizeAs(y))
 
+--[[
+nElement()  获取Tensor里面元素的个数
+--]]
 
-
+x = torch.Tensor(4, 5)
+print("x中元素的个数是  ",x:nElement())
